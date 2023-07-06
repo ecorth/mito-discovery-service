@@ -1,19 +1,66 @@
+---
 server:
   port: ${CUSTOM.SERVER.PORT:8761}
 
 spring:
+  config:
+    activate:
+      on-profile: profile-1
   application:
-    name:@project.name@
-
+    name: discovery-server-1
 eureka:
   instance:
-    hostname: localhost
+    hostname: discovery-server-1
     preferIpAddress: true
     leaseExpirationDurationInSeconds: 30
   client:
-    fetch-registry: false
-    registry-with-eureka: false
+    fetch-registry: true
     service-url:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
-    datacenter: ecorth
-    environment: Development
+      defaultZone: http://localhost:8762/eureka,http://localhost:8763/eureka
+    register-with-eureka: true
+  datacenter: ecorth
+  environment: Development
+---
+
+server:
+  port: ${CUSTOM.SERVER.PORT:8762}
+spring:
+  config:
+    activate:
+      on-profile: profile-2
+  application:
+    name: discovery-server-2
+eureka:
+  instance:
+    hostname: discovery-server-2
+    preferIpAddress: true
+    leaseExpirationDurationInSeconds: 30
+  client:
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka,http://localhost:8763/eureka
+    register-with-eureka: true
+  datacenter: ecorth
+  environment: Development
+---
+
+server:
+  port: ${CUSTOM.SERVER.PORT:8763}
+spring:
+  config:
+    activate:
+      on-profile: profile-3
+  application:
+    name: discovery-server-3
+eureka:
+  instance:
+    hostname: discovery-server-3
+    preferIpAddress: true
+    leaseExpirationDurationInSeconds: 30
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka,http://localhost:8762/eureka
+  datacenter: ecorth
+  environment: Development
